@@ -2,6 +2,13 @@
 
 goscan libray for command parameters scan usefully.
 
+#import package
+
+```shell
+
+go get 
+```
+
 #demo
 
 ```go
