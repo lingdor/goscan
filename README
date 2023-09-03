@@ -1,0 +1,21 @@
+# goscan
+
+goscan libray for command parameters scan usefully.
+
+#demo
+
+`
+scanner,err:=goscan.NewScanStd()
+`
+or
+`
+words,err:=scanner.ScanWords()
+`
+or
+`
+word,end,err:=scanner.Scan()
+if word == "get" {
+     keys,err:=scanner.ScanWords()
+    ...
+}
+`
