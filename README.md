@@ -6,7 +6,7 @@ goscan libray for command parameters scan usefully.
 
 ```shell
 
-go get 
+go get github.com/lingdor/goscan
 ```
 
 #demo

@@ -1,7 +1,7 @@
 package goscan
 
 import (
-	"goscan/strs"
+	"github.com/lingdor/goscan/strs"
 	"io"
 	"os"
 )
