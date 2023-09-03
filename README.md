@@ -11,6 +11,11 @@ or
 ```go
 words,err:=scanner.ScanWords()
 ```
+
+input: set key "content\"good"
+
+output: []{"set","key","content\"good"}
+
 or
 ```go
 word,end,err:=scanner.Scan()
