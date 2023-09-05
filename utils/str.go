@@ -1,4 +1,4 @@
-package strs
+package utils
 
 func IsEmptyChar(bt byte) bool {
 	return bt == '\t' || bt == ' ' || bt == '\r' || bt == '\n' || bt == byte(0)

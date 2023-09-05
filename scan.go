@@ -1,23 +1,26 @@
 package goscan
 
 import (
-	"github.com/lingdor/goscan/strs"
+	"bufio"
+	"github.com/lingdor/goscan/utils"
 	"io"
 	"os"
+	"strings"
 )
 
-type ScanedLine interface {
+type Scanner interface {
 	Scan() (str string, end bool, err error)
 	ScanWords() ([]string, error)
+	CheckToEnd() (check bool, err error)
 	//todo ScanVars([]interface{}) error
 }
 
-type ReaderScanedLine struct {
-	ScanedLine
+type ReaderScanner struct {
+	Scanner
 	reader io.Reader
 }
 
-func (c ReaderScanedLine) Scan() (str string, end bool, err error) {
+func (c ReaderScanner) Scan() (str string, end bool, err error) {
 
 	var bs []byte = make([]byte, 1)
 	var result []byte = make([]byte, 0, 10)
@@ -42,7 +45,7 @@ func (c ReaderScanedLine) Scan() (str string, end bool, err error) {
 			break
 		}
 
-		if len(result) == 0 && strs.IsSpace(char) {
+		if len(result) == 0 && utils.IsSpace(char) {
 			continue // ignore the start space
 		}
 		if startChar == '\n' {
@@ -50,7 +53,7 @@ func (c ReaderScanedLine) Scan() (str string, end bool, err error) {
 				// 结束
 				end = true
 				break
-			} else if strs.IsEmptyChar(char) {
+			} else if utils.IsEmptyChar(char) {
 				break
 			}
 		} else {
@@ -59,7 +62,7 @@ func (c ReaderScanedLine) Scan() (str string, end bool, err error) {
 				if _, err = c.reader.Read(next); err != nil {
 					return
 				}
-				char = strs.EscapeWord(next[0])
+				char = utils.EscapeWord(next[0])
 			} else if startChar == char {
 				if len(result) == 0 || result[len(result)-1] != '\\' {
 					break
@@ -72,7 +75,7 @@ func (c ReaderScanedLine) Scan() (str string, end bool, err error) {
 	err = nil
 	return
 }
-func (c ReaderScanedLine) ScanWords() (words []string, err error) {
+func (c ReaderScanner) ScanWords() (words []string, err error) {
 
 	words = make([]string, 0, 2)
 	var end bool
@@ -89,16 +92,26 @@ func (c ReaderScanedLine) ScanWords() (words []string, err error) {
 		}
 	}
 }
-
-// NewScanStd to read stdin line content for scan operation
-func NewScanStd() (ScanedLine, error) {
-	return NewFScan(os.Stdin)
+func (c ReaderScanner) CheckToEnd() (check bool, err error) {
+	reader := bufio.NewReader(c.reader)
+	var bytes []byte
+	if bytes, err = reader.ReadBytes('\r'); err != nil {
+		check = false
+		return
+	}
+	str := strings.TrimSpace(string(bytes))
+	check = str == ""
+	return
 }
 
-// NewFScan to read Reader line content for scan operation
-func NewFScan(reader io.Reader) (line ScanedLine, err error) {
-	line = &ReaderScanedLine{
+// NewScanner to read stdin line content for scan operation
+func NewScanner() Scanner {
+	return NewFScanner(os.Stdin)
+}
+
+// NewFScanner to read Reader line content for scan operation
+func NewFScanner(reader io.Reader) (line Scanner) {
+	return &ReaderScanner{
 		reader: reader,
 	}
-	return
 }
