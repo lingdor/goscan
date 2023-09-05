@@ -1,6 +1,6 @@
 # goscan
 
-goscan libray for command parameters scan usefully.
+goscan libray for command parameters scan gracefully.
 
 #import package
 
