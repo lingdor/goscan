@@ -52,7 +52,7 @@ func TestScan(t *testing.T) {
 		t.Run(testCase.title, func(t *testing.T) {
 
 			reader := bufio.NewReader(bytes.NewReader([]byte(testCase.input)))
-			line := NewFScanner(reader)
+			line := NewFLineScanner(reader)
 			words, err := line.ScanWords()
 			if err != nil {
 				t.Error(err)
